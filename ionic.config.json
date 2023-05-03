@@ -1,0 +1,7 @@
+{
+  "name": "ble_direction",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
