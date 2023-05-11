@@ -5,8 +5,8 @@ import { map, take } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class TemperatureService {
-  temperature: number | undefined;
+export class ProximityService {
+  proximity: number | undefined;
 
   isConnected: boolean = false;
   deviceId: string | undefined;
@@ -25,13 +25,13 @@ export class TemperatureService {
       this.isConnected = connected;
       //set up the notification
       if (connected) {
-        this.bluetoothService.tempNotifyData(this.deviceId!, "19B10009-E8F2-537E-4F6C-D104768A1214", "19B10017-E8F2-537E-4F6C-D104768A1214");
+        this.bluetoothService.proxNotifyData(this.deviceId!, "19B10008-E8F2-537E-4F6C-D104768A1214", "19B10015-E8F2-537E-4F6C-D104768A1214");
       }
     })).subscribe();
 
 
-    this.bluetoothService.tempData.subscribe((data) => {
-      this.temperature = data[0];
+    this.bluetoothService.proxData.subscribe((data) => {
+      this.proximity = data;
     });
    }
 }

@@ -7,6 +7,8 @@ import { GyroscopeService } from '../services/gyroscope.service';
 import { MagnatometerService } from '../services/magnatometer.service';
 import { TemperatureService } from '../services/temperature.service';
 import { HumidityService } from '../services/humidity.service';
+import { ProximityService } from '../services/proximity.service';
+import { GestureService } from '../services/gesture.service';
 
 @Component({
   selector: 'app-explore-container',
@@ -26,43 +28,20 @@ export class ExploreContainerComponent implements OnInit, OnDestroy {
     public gyroService: GyroscopeService,
     public magService: MagnatometerService,
     public tempService: TemperatureService,
-    public humService: HumidityService,) {
+    public humService: HumidityService,
+    public gestService: GestureService,
+    public proxService: ProximityService,) {
     //this.bluetoothService.initializeBluetooth();
   }
 
   ngOnInit() {
-    this.bluetoothService.deviceId.subscribe((id) => {
-      this.deviceId = id;
-    });
-
     this.bluetoothService.connectionData.pipe(
       take(1),
-      map((connected) => {
+      map(
+      (connected) => {
       this.isConnected = connected;
       //set up the notification
-      if (connected) {
-        this.bluetoothService.onGestureNotifyData(this.deviceId!, "19B10010-E8F2-537E-4F6C-D104768A1214", "19B10014-E8F2-537E-4F6C-D104768A1214");
-      }
     })).subscribe();
-
-    //subscribe to notifty data
-    this.gestureSub = this.bluetoothService.notifyData.subscribe((data) => {
-      console.log('notify data', data);
-      const directionInt = data[0];
-      if (directionInt === 0) {
-        this.direction = 'up';
-      }
-      if (directionInt === 1) {
-        this.direction = 'down';
-      }
-      if (directionInt === 2) {
-        this.direction = 'left';
-      }
-      if (directionInt === 3) {
-        this.direction = 'right';
-      }
-    }
-    );
   }
 
   convertCtoF(c: number) {

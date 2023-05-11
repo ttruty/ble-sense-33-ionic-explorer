@@ -26,12 +26,13 @@ export class BluetoothService {
   public _recordingState = new Subject<boolean>();
   private _device = new Subject<any>();
   private _mapData = new Subject<any>();
-  private _notifyData = new Subject<any>();
+  private _gestData = new Subject<any>();
   private _accelData = new Subject<any>();
   private _gyroData = new Subject<any>();
   private _magData = new Subject<any>();
   private _tempData = new Subject<any>();
   private _humData = new Subject<any>();
+  private _proxData = new Subject<any>();
   isConnected: boolean = false;
   isConnecting: boolean = false;
 
@@ -61,8 +62,8 @@ export class BluetoothService {
     return this._mapData.asObservable();
   }
 
-  get notifyData() {
-    return this._notifyData.asObservable();
+  get gestData() {
+    return this._gestData.asObservable();
   }
 
   get accelData() {
@@ -79,6 +80,9 @@ export class BluetoothService {
   }
   get humData() {
     return this._humData.asObservable();
+  }
+  get proxData() {
+    return this._proxData.asObservable();
   }
 
   get recordingState() {
@@ -121,7 +125,7 @@ export class BluetoothService {
 
   requestDevice() {
     return BleClient.requestDevice({
-      services: ['19B10010-E8F2-537E-4F6C-D104768A1214', '19B10009-E8F2-537E-4F6C-D104768A1214'],
+      services: ['19B10010-E8F2-537E-4F6C-D104768A1214', '19B10009-E8F2-537E-4F6C-D104768A1214', '19B10008-E8F2-537E-4F6C-D104768A1214'],
     }).then((deviceId) => {
       console.log('DEVICE ID:', deviceId);
       this.onConnectDevice(deviceId.deviceId);
@@ -267,7 +271,7 @@ export class BluetoothService {
       characteristic,
       (value) => {
         data = this.parsDataReading(value);
-        this._notifyData.next(data);
+        this._gestData.next(data);
       }
     );
   }
@@ -316,7 +320,6 @@ export class BluetoothService {
       service,
       characteristic,
       (value) => {
-        console.log('temp raw value', value);
         data = this.parseSensorDataReading(value);
         this._tempData.next(data);
       }
@@ -335,11 +338,31 @@ export class BluetoothService {
     );
   }
 
+  async proxNotifyData(deviceId:string, service:string, characteristic:string) {
+    let data: number[];
+    await BleClient.startNotifications(
+      deviceId,
+      service,
+      characteristic,
+      (value) => {
+        data = this.parsDataReading(value);
+        this._proxData.next(data[0]);
+      }
+    );
+  }
+
+  parseIntReading(data: DataView) {
+    //parse the data from the dataview into a int
+    const int = data.getUint16(0);
+    return int;
+  }
+
+
   parsDataReading(data: DataView) {
     const dataArray = [];
     const length = data.byteLength;
     for (let index = 0; index < length; index++) {
-      const element = data.getInt8(index); //data from the subscription to the map object
+      const element = data.getUint8(index); //data from the subscription to the map object
       dataArray.push(element);
     }
     // console.log('Read BT data:', dataArray);

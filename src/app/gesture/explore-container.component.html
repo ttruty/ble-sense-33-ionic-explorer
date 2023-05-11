@@ -26,10 +26,18 @@
           <strong>{{ humService.humidity | number : '1.2-2' }}%</strong>
         </div>
       </ion-col>
+    </ion-row>
+    <ion-row>
       <ion-col>
         <h2>Gesture</h2>
         <div>
-          <strong>{{ direction }}</strong>
+          <strong>{{ gestService.gesture }}</strong>
+        </div>
+      </ion-col>
+      <ion-col>
+        <h2>Proximity</h2>
+        <div>
+          <strong>{{ proxService.proximity }}</strong>
         </div>
       </ion-col>
     </ion-row>
