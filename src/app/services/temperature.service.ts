@@ -25,7 +25,7 @@ export class TemperatureService {
       this.isConnected = connected;
       //set up the notification
       if (connected) {
-        this.bluetoothService.tempNotifyData(this.deviceId!, "19B10009-E8F2-537E-4F6C-D104768A1214", "19B10016-E8F2-537E-4F6C-D104768A1214");
+        this.bluetoothService.tempNotifyData(this.deviceId!, "19B10009-E8F2-537E-4F6C-D104768A1214", "19B10017-E8F2-537E-4F6C-D104768A1214");
       }
     })).subscribe();
 
